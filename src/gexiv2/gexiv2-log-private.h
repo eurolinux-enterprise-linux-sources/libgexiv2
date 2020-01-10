@@ -7,16 +7,16 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef GEXIV2_LOG_PRIVATE_H
-#define GEXIV2_LOG_PRIVATE_H
+#ifndef __GEXIV2_LOG_PRIVATE_H__
+#define __GEXIV2_LOG_PRIVATE_H__
 
 #include <gexiv2/gexiv2-log.h>
 #include <exiv2/error.hpp>
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL gboolean        gexiv2_log_is_handler_installed(void);
+gboolean        gexiv2_log_is_handler_installed(void);
 
 G_END_DECLS
 
-#endif /* GEXIV2_LOG_PRIVATE_H */
+#endif /* __GEXIV2_LOG_PRIVATE_H__ */

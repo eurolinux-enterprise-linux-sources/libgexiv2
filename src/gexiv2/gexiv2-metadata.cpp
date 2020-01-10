@@ -19,11 +19,9 @@
 #include "gexiv2-log.h"
 #include "gexiv2-log-private.h"
 #include <string>
-#include <cmath>
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <exiv2/image.hpp>
-#include <exiv2/xmpsidecar.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
@@ -32,10 +30,6 @@
 
 
 G_BEGIN_DECLS
-
-#define GEXIV2_METADATA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataPrivate))
-
 G_DEFINE_TYPE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
 
 static void gexiv2_metadata_finalize (GObject *object);
@@ -98,7 +92,7 @@ static void gexiv2_metadata_finalize (GObject *object) {
     G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
 
-GExiv2Metadata* gexiv2_metadata_new (void) {
+GExiv2Metadata* gexiv2_metadata_new () {
     return GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
 }
 
@@ -159,7 +153,7 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
     self->priv->image->readMetadata ();
     gexiv2_metadata_init_internal(self);
     
-    return TRUE;
+    return true;
 }
 
 gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GError **error) {
@@ -245,7 +239,7 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *d
         Exiv2::ExifParser::decode(self->priv->image->exifData(), data + offset, n_data - offset);
         gexiv2_metadata_init_internal(self);
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error &e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
         
@@ -310,19 +304,7 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Imag
     
     image->writeMetadata ();
     
-    return TRUE;
-}
-
-gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path, GError **error) {
-    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-
-    try {
-        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, path), error);
-    } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
-    }
-
-    return FALSE;
+    return true;
 }
 
 gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GError **error) {
@@ -330,7 +312,7 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     
     try {
         return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (path), error);
-    } catch (Exiv2::Error &e) {
+    } catch (Exiv2::Error e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
@@ -405,6 +387,86 @@ const gchar* gexiv2_metadata_get_mime_type (GExiv2Metadata *self) {
     return self->priv->mime_type;
 }
 
+gchar* gexiv2_metadata_get_date_time (GExiv2Metadata *self) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
+    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    
+    if (gexiv2_metadata_has_exif(self)) {
+        gchar *datetime = gexiv2_metadata_get_exif_tag_interpreted_string(self,
+            "Exif.Photo.DateTimeOriginal");;
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_exif_tag_interpreted_string(self, "Exif.Image.DateTime");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_exif_tag_interpreted_string(self,
+            "Exif.Image.DateTimeDigitized");
+        if (datetime != NULL)
+            return datetime;
+    }
+    
+    if (gexiv2_metadata_has_xmp(self)) {
+        gchar *datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, 
+            "Xmp.exif.DateTimeOriginal");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.xmp.CreateDate");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.exif.DateTimeDigitized");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.tiff.DateTime");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.photoshop.DateCreated");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.xmp.ModifyDate");
+        if (datetime != NULL)
+            return datetime;
+        
+        datetime = gexiv2_metadata_get_xmp_tag_interpreted_string(self, "Xmp.xmp.MetadataDate");
+        if (datetime != NULL)
+            return datetime;
+    }
+    
+    /* FIXME: handle IPTC Date */
+    
+    return NULL;
+}
+
+void gexiv2_metadata_set_date_time (GExiv2Metadata *self, const gchar* datetime) {
+    g_return_if_fail(GEXIV2_IS_METADATA (self));
+    g_return_if_fail(self->priv->image.get() != NULL);
+    
+    Exiv2::ExifData& exif_data = self->priv->image->exifData();
+    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+    
+    exif_data["Exif.Image.DateTime"] = datetime;
+    exif_data["Exif.Photo.DateTimeOriginal"] = datetime;
+    /* FIXME: Maybe make set of Digitized-Time optional */
+    exif_data["Exif.Photo.DateTimeDigitized"] = datetime;
+    
+    xmp_data["Xmp.exif.DateTimeOriginal"] = datetime;
+    /* FIXME: Maybe make set of Digitized-Time optional */
+    xmp_data["Xmp.exif.DateTimeDigitized"] = datetime;
+    xmp_data["Xmp.xmp.CreateDate"] = datetime;
+    xmp_data["Xmp.tiff.DateTime"] = datetime;
+    xmp_data["Xmp.photoshop.DateCreated"] = datetime;
+    xmp_data["Xmp.xmp.ModifyDate"] = datetime;
+    xmp_data["Xmp.xmp.MetadataDate"] = datetime;
+    
+    /* TODO: handle IPTC data */
+}
+
 GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), GEXIV2_ORIENTATION_UNSPECIFIED);
     g_return_val_if_fail(self->priv->image.get() != NULL, GEXIV2_ORIENTATION_UNSPECIFIED);
@@ -413,31 +475,22 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         // Because some camera set a wrong standard exif orientation tag,
         // We need to check makernote tags first!
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs7D.Rotation")) {
-            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation");
-            switch (orientation) {
-                case 76:
-                    return GEXIV2_ORIENTATION_ROT_90;
-                case 82:
-                    return GEXIV2_ORIENTATION_ROT_270;
-                case 72:
-                    return GEXIV2_ORIENTATION_UNSPECIFIED;
-                default:
-                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
-            }
-        }
-
-        if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs5D.Rotation")) {
-            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation");
-            switch (orientation) {
+            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation")) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
                 
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
-                case 72:
-                    return GEXIV2_ORIENTATION_UNSPECIFIED;
-                default:
-                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
+            }
+        }
+        
+        if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs5D.Rotation")) {
+            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation")) {
+                case 76:
+                    return GEXIV2_ORIENTATION_ROT_90;
+                
+                case 82:
+                    return GEXIV2_ORIENTATION_ROT_270;
             }
         }
         
@@ -488,7 +541,7 @@ void gexiv2_metadata_set_orientation (GExiv2Metadata *self, GExiv2Orientation or
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     exif_data["Exif.Image.Orientation"] = static_cast<uint16_t> (orientation);
-    xmp_data["Xmp.tiff.Orientation"] = static_cast<uint16_t> (orientation);
+    xmp_data["Xmp.tiff.ImageWidth"] = static_cast<uint16_t> (orientation);
     
     gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs7D.Rotation");
     gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs5D.Rotation");
@@ -606,19 +659,7 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_iptc_tag_interpreted_string (self, "Iptc.Application2.Caption");
-    if (str != NULL && *str != '\0')
-        return str;
-    else
-        g_free (str);
-    
-    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.dc.description");
-    if (str != NULL && *str != '\0')
-        return str;
-    else
-        g_free (str);
-    
-    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.acdsee.notes");
+    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Iptc.Application2.Caption");
     if (str != NULL && *str != '\0')
         return str;
     else
@@ -630,34 +671,71 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
 void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != NULL);
-    g_return_if_fail(comment != NULL);
     
     Exiv2::ExifData& exif_data = self->priv->image->exifData();
     Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
-    gexiv2_metadata_set_comment_internal (self, comment);
+    gexiv2_metadata_set_comment_internal (self, (comment != NULL) ? comment : "");
     exif_data ["Exif.Image.ImageDescription"] = comment;
     exif_data ["Exif.Photo.UserComment"] = comment;
     exif_data ["Exif.Image.XPComment"] = comment;
-    iptc_data ["Iptc.Application2.Caption"] = comment;
-    xmp_data ["Xmp.dc.description"] = comment;
-    /* Do not need to write to acdsee properties, just read from them */ 
-    // xmp_data ["Xmp.acdsee.notes"] = comment;
+    exif_data ["Iptc.Application2.Caption"] = comment;
 }
 
 void gexiv2_metadata_clear_comment (GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != NULL);
-
-    /* don't delete the comment field, merely empty it */
+    
+    /* TODO: Original coder included comment below.  Investigate reasoning. */
+    /* don't' delete the comment field */
     gexiv2_metadata_set_comment_internal (self, "");
+}
+
+gchar** gexiv2_metadata_get_keywords (GExiv2Metadata *self) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
+    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    
+    gchar** keywords = gexiv2_metadata_get_xmp_tag_multiple (self, "Xmp.dc.subject");
+    if (keywords != NULL && (*keywords) != NULL)
+        return keywords;
+    
+    return gexiv2_metadata_get_iptc_keywords (self);
+}
+
+void gexiv2_metadata_set_keywords (GExiv2Metadata *self, const gchar** keywords) {
+    g_return_if_fail(GEXIV2_IS_METADATA (self));
+    g_return_if_fail(self->priv->image.get() != NULL);
+    
+    gexiv2_metadata_set_xmp_tag_multiple (self, "Xmp.dc.subject", keywords);
+    gexiv2_metadata_set_iptc_tag_multiple (self, "Iptc.Application2.Keywords", keywords);
+}
+
+guint gexiv2_metadata_get_rating (GExiv2Metadata *self) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), 0);
+    g_return_val_if_fail(self->priv->image.get() != NULL, 0);
+    
+    guint rating = gexiv2_metadata_get_xmp_tag_long (self, "Xmp.xmp.Rating");
+    
+    if (rating != 0)
+        return rating;
+        
+    rating = gexiv2_metadata_get_exif_tag_long (self, "Exif.Image.Rating");
+    
+    return rating;
+}
+
+void gexiv2_metadata_set_rating (GExiv2Metadata *self, guint rating) {
+    g_return_if_fail(GEXIV2_IS_METADATA(self));
+    g_return_if_fail(self->priv->image.get() != NULL);
+    
+    gexiv2_metadata_set_xmp_tag_long (self, "Xmp.xmp.Rating", rating);
+    gexiv2_metadata_set_exif_tag_long (self, "Exif.Image.Rating", rating);
 }
 
 gboolean gexiv2_metadata_is_exif_tag(const gchar* tag) {
     g_return_val_if_fail(tag != NULL, FALSE);
     
-    return g_ascii_strncasecmp("Exif.", tag, 5) == 0;
+    return g_ascii_strncasecmp("Exif.", tag, 4) == 0;
 }
 
 gboolean gexiv2_metadata_is_xmp_tag(const gchar* tag) {
@@ -785,26 +863,44 @@ gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gin
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    gdouble fnumber = gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
-    if (fnumber == -1.0) {
-        gdouble aperture_value = gexiv2_metadata_get_exif_tag_rational_as_double(self,
-                                                                                 "Exif.Photo.ApertureValue",
-                                                                                 -1.0);
-        if (aperture_value == -1.0)
-          return fnumber;
-
-        fnumber = pow (2.0, aperture_value / 2.0);
-    }
-
-    return fnumber;
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), -1.0);
+    g_return_val_if_fail(self->priv->image.get() != NULL, -1.0);
+    
+    gint nom;
+    gint den;
+    if ( ! gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.ISOSpeedRatings", &nom, &den))
+        return -1.0;
+    
+    if (den == 0.0)
+        return -1.0;
+    
+    return (nom / den);
 }
 
 gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FocalLength", -1.0);
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), -1.0);
+    g_return_val_if_fail(self->priv->image.get() != NULL, -1.0);
+    
+    gint nom;
+    gint den;
+    if ( ! gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.FocalLength", &nom, &den))
+        return -1.0;
+    
+    if (den == 0.0)
+        return -1.0;
+        
+    return (nom / den);
 }
 
 gint gexiv2_metadata_get_iso_speed (GExiv2Metadata *self) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
+    g_return_val_if_fail(self->priv->image.get() != NULL, -1);
+    
     return (gint) gexiv2_metadata_get_exif_tag_long (self, "Exif.Photo.ISOSpeedRatings");
+}
+
+gchar* gexiv2_metadata_get_camera_model (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_exif_tag_string (self, "Exif.Image.Model");
 }
 
 GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata *self) {
@@ -838,7 +934,7 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     memcpy(*buffer, data.pData_, data.size_);
     *size = data.size_;
     
-    return TRUE;
+    return true;
 }
 
 gboolean gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, const gchar *path,
@@ -851,7 +947,7 @@ gboolean gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, con
     try {
         thumb.setJpegThumbnail(std::string(path));
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
@@ -905,38 +1001,6 @@ const gchar* gexiv2_metadata_get_tag_description (const gchar *tag) {
     if (gexiv2_metadata_is_iptc_tag(tag))
         return gexiv2_metadata_get_iptc_tag_description(tag);
     
-    return NULL;
-}
-
-const gchar* gexiv2_metadata_get_tag_type (const gchar *tag) {
-    g_return_val_if_fail(tag != NULL, NULL);
-    
-    if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_type(tag);
-    
-    if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_type(tag);
-    
-    if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_type(tag);
-    
-    return NULL;
-}
-
-GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-
-    if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_raw(self, tag);
-
-    if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_raw(self, tag);
-
-    if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_raw(self, tag);
-
     return NULL;
 }
 

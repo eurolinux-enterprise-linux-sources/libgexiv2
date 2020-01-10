@@ -1,132 +1,105 @@
 Name:           libgexiv2
-Version:        0.10.8
-Release:        1%{?dist}
+Version:        0.5.0
+Release:        7%{?dist}
 Summary:        Gexiv2 is a GObject-based wrapper around the Exiv2 library
 
+Group:          System Environment/Libraries
 License:        GPLv2+
-URL:            https://wiki.gnome.org/Projects/gexiv2
-Source0:        https://download.gnome.org/sources/gexiv2/0.10/gexiv2-%{version}.tar.xz
+URL:            http://trac.yorba.org/wiki/gexiv2 
+Source0:        http://yorba.org/download/gexiv2/0.5/%{name}-%{version}.tar.xz
+Patch0:         %{name}-pkgconf.patch
 
 BuildRequires:  exiv2-devel
 BuildRequires:  gobject-introspection-devel
 BuildRequires:  libtool
-BuildRequires:  python2-devel
-BuildRequires:  python-gobject-base
-BuildRequires:  vala
-%if 0%{?fedora} || 0%{?rhel} > 7
+BuildRequires:  python-devel
+BuildRequires:  pygobject3-base
+%if !0%{?rhel}
 BuildRequires:  python3-devel
-BuildRequires:  python3-gobject-base
+BuildRequires:  python3-gobject
 %endif
 
 %description
 libgexiv2 is a GObject-based wrapper around the Exiv2 library. 
 It makes the basic features of Exiv2 available to GNOME applications.
 
+
 %package        devel
 Summary:        Development files for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Group:          Development/Libraries
+Requires:       %{name} = %{version}-%{release}
+Requires:       vala
 
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
-%package -n     python2-gexiv2
-Summary:        Python2 bindings for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       python-gobject-base%{?_isa}
-# For upgrade path from F24
-Provides:       libgexiv2-python2 = %{name}-%{version}
-Obsoletes:      libgexiv2-python2 < 0.10.4
+%package    python2
+Summary:    Python2 bindings for %{name}
+Requires:   %{name} = %{version}-%{release}
+Requires:   pygobject3-base
 
-%description -n python2-gexiv2
+%description    python2
 This package contains the python2 bindings for %{name}
 
-%if 0%{?fedora} || 0%{?rhel} > 7
-%package -n     python3-gexiv2
-Summary:        Python3 bindings for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       python3-gobject-base%{?_isa}
-# For upgrade path from F24
-Provides:       libgexiv2-python3 = %{name}-%{version}
-Obsoletes:      libgexiv2-python3 < 0.10.4
+%if !0%{?rhel}
+%package    python3
+Summary:    Python3 bindings for %{name}
+Requires:   %{name} = %{version}-%{release}
+Requires:   python3-gobject
 
-%description -n python3-gexiv2
+%description    python3
 This package contains the python3 bindings for %{name}
 %endif
 
 %prep
-%setup -q -n gexiv2-%{version}
+%setup -q
+%patch0 -p1
 
 %build
-%configure --enable-introspection --enable-static=no --enable-shared=yes
-%make_build
+CFLAGS="%{optflags}"; export CFLAGS
+CXXFLAGS="%{optflags}"; export CXXFLAGS
+FFLAGS="%{optflags} -I/usr/lib64/gfortran/modules"; export FFLAGS
+LDFLAGS="-Wl,-z,relro"; export LDFLAGS
+
+# it is not an autotool generated configure script
+./configure --release --enable-introspection --prefix=/usr
+make %{?_smp_mflags}
 
 %install
-%make_install
+make install DESTDIR=$RPM_BUILD_ROOT LIB=%{_lib}
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 
-%check
-make check
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
+
 %files
-%license COPYING
-%doc AUTHORS THANKS README
-%{_libdir}/libgexiv2.so.2*
-%{_libdir}/girepository-1.0/GExiv2-0.10.typelib
+%doc AUTHORS COPYING MAINTAINERS 
+%{_libdir}/libgexiv2.so.*
+%{_datadir}/gir-1.0/GExiv2-0.4.gir
+%{_libdir}/girepository-1.0/GExiv2-0.4.typelib
 
 %files devel
 %{_includedir}/gexiv2/
-%{_datadir}/gir-1.0/GExiv2-0.10.gir
 %{_libdir}/libgexiv2.so
 %{_libdir}/pkgconfig/gexiv2.pc
-%dir %{_datadir}/gtk-doc
-%dir %{_datadir}/gtk-doc/html
-%{_datadir}/gtk-doc/html/gexiv2/
-%dir %{_datadir}/vala
-%dir %{_datadir}/vala/vapi
 %{_datadir}/vala/vapi/gexiv2.vapi
 
-%files -n python2-gexiv2
-%{python2_sitearch}/gi/overrides/GExiv2.py*
 
-%if 0%{?fedora} || 0%{?rhel} > 7
-%files -n python3-gexiv2
+%files python2
+%{python_sitearch}/gi/overrides/GExiv2.py*
+
+%if !0%{?rhel}
+%files python3
 %{python3_sitearch}/gi/overrides/GExiv2.py
 %{python3_sitearch}/gi/overrides/__pycache__/GExiv2*
 %endif
 
 %changelog
-* Tue Feb 06 2018 Kalev Lember <klember@redhat.com> - 0.10.8-1
-- Update to 0.10.8
-- Resolves: #1570008
-
-* Wed Oct 11 2017 Debarshi Ray <rishi@fedoraproject.org> - 0.10.4-4
-- Ensure that the new exiv2 soname is used during the build
-- Adapt to Exiv2::BasicIo API change
-  Resolves: rhbz#1486570
-
-* Tue Sep 19 2017 Richard Hughes <rhughes@redhat.com> - 0.10.4-3
-- Rebuild against the rebased exiv2
-- Resolves: rhbz#1486570
-
-* Fri May 19 2017 Debarshi Ray <rishi@fedoraproject.org> - 0.10.4-2
-- Add Provides to retain compatibility
-  Resolves: rhbz#1387004
-
-* Thu Feb 23 2017 Matthias Clasen <mclasen@redhat.com> - 0.10.4-1
-- Rebase to 0.10.4
-  Resolves: rhbz#1387004
-
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.5.0-9
-- Mass rebuild 2014-01-24
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.5.0-8
-- Mass rebuild 2013-12-27
-
 * Wed May 08 2013 Richard Hughes <richard@hughsie.com> 0.5.0-7
 - RHEL7 does not have python3
 

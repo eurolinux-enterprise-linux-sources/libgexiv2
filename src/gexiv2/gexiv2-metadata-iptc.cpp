@@ -16,6 +16,9 @@
 
 G_BEGIN_DECLS
 
+void gexiv2_metadata_set_iptc_tag_string_cut (GExiv2Metadata *self, const gchar* tag,
+    const gchar* value, gsize bytes);
+
 gboolean gexiv2_metadata_has_iptc (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
@@ -32,7 +35,7 @@ gboolean gexiv2_metadata_has_iptc_tag(GExiv2Metadata *self, const gchar* tag) {
     
     for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
-            return TRUE;
+            return true;
     }
     
     return FALSE;
@@ -51,7 +54,7 @@ gboolean gexiv2_metadata_clear_iptc_tag(GExiv2Metadata *self, const gchar* tag) 
     while (it != iptc_data.end()) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = iptc_data.erase(it);
-            erased = TRUE;
+            erased = true;
         } else {
             it++;
         }
@@ -153,7 +156,7 @@ gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar*
     try {
         self->priv->image->iptcData()[tag] = value;
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -194,8 +197,6 @@ gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar
         LOG_ERROR(e);
     }
     
-    g_slist_free_full (list, g_free);
-    
     return NULL;
 }
 
@@ -230,12 +231,121 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
             ++it;
         }
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
     
     return FALSE;
+}
+
+gchar** gexiv2_metadata_get_iptc_keywords (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_multiple (self, "Iptc.Application2.Keywords");
+}
+
+gchar* gexiv2_metadata_get_iptc_headline (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Headline");
+}
+
+
+gchar* gexiv2_metadata_get_iptc_caption (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Caption");
+}
+
+gchar* gexiv2_metadata_get_iptc_byline (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Byline");
+}
+
+gchar* gexiv2_metadata_get_iptc_byline_title (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.BylineTitle");
+}
+
+gchar* gexiv2_metadata_get_iptc_copyright (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Copyright");
+}
+
+gchar* gexiv2_metadata_get_iptc_contact (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Contact");
+}
+
+gchar* gexiv2_metadata_get_iptc_city (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.City");
+}
+
+gchar* gexiv2_metadata_get_iptc_sublocation (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.SubLocation");
+}
+
+gchar* gexiv2_metadata_get_iptc_province_state (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.ProvinceState");
+}
+
+gchar* gexiv2_metadata_get_iptc_country_code (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.CountryCode");
+}
+
+gchar* gexiv2_metadata_get_iptc_country_name (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.CountryName");
+}
+
+gchar* gexiv2_metadata_get_iptc_writer (GExiv2Metadata *self) {
+    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Writer");
+}
+
+void gexiv2_metadata_set_iptc_tag_string_cut (GExiv2Metadata *self, const gchar* tag, 
+    const gchar* value, gsize bytes) {
+    g_return_if_fail(GEXIV2_IS_METADATA(self));
+    g_return_if_fail(tag != NULL);
+    g_return_if_fail(value != NULL);
+    g_return_if_fail(bytes >= 0);
+    g_return_if_fail(self->priv->image.get() != NULL);
+    
+    if (bytes == 0)
+        return;
+    
+    gchar* cut_value = g_strndup (value, bytes);
+    gexiv2_metadata_set_iptc_tag_string (self, tag, cut_value);
+    g_free (cut_value);
+}
+
+void gexiv2_metadata_set_iptc_byline (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Byline", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_byline_title (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.BylineTitle", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_copyright (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Copyright", value, 128);
+}
+
+void gexiv2_metadata_set_iptc_contact (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Contact", value, 128);
+}
+
+void gexiv2_metadata_set_iptc_city (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.City", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_sublocation (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.SubLocation", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_province_state (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.ProvinceState", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_country_code (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.CountryCode", value, 3);
+}
+
+void gexiv2_metadata_set_iptc_country_name (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.CountryName", value, 32);
+}
+
+void gexiv2_metadata_set_iptc_writer (GExiv2Metadata *self, const gchar* value) {
+    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Writer", value, 32);
 }
 
 const gchar* gexiv2_metadata_get_iptc_tag_label (const gchar* tag) {
@@ -261,46 +371,6 @@ const gchar* gexiv2_metadata_get_iptc_tag_description (const gchar* tag) {
         LOG_ERROR(e);
     }
     
-    return NULL;
-}
-
-const gchar* gexiv2_metadata_get_iptc_tag_type (const gchar* tag) {
-    g_return_val_if_fail(tag != NULL, NULL);
-    
-    try {
-        Exiv2::IptcKey key (tag);
-        return Exiv2::TypeInfo::typeName(Exiv2::IptcDataSets::dataSetType(key.tag(), key.record()));
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-    
-    return NULL;
-}
-
-GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-
-    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-
-    try {
-        Exiv2::IptcData::iterator it = iptc_data.findKey(Exiv2::IptcKey(tag));
-        while (it != iptc_data.end() && it->count() == 0)
-            it++;
-
-        if (it != iptc_data.end()) {
-            long size = it->size();
-            if( size > 0 ) {
-                gpointer data = g_malloc(size);
-                it->copy((Exiv2::byte*)data, Exiv2::invalidByteOrder);
-                return g_bytes_new_take(data, size);
-            }
-        }
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-
     return NULL;
 }
 

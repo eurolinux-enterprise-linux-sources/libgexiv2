@@ -30,22 +30,6 @@ void gexiv2_metadata_clear_xmp(GExiv2Metadata *self) {
     self->priv->image->xmpData().clear();
 }
 
-gchar *gexiv2_metadata_generate_xmp_packet(GExiv2Metadata *self, 
-    GExiv2XmpFormatFlags xmp_format_flags, guint32 padding) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    
-    Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
-    try {
-        if (Exiv2::XmpParser::encode(self->priv->image->xmpPacket(), xmp_data, xmp_format_flags, padding) == 0)
-          return g_strdup(self->priv->image->xmpPacket().c_str());
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-    
-    return NULL;
-}
-
 gchar *gexiv2_metadata_get_xmp_packet(GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
@@ -68,7 +52,7 @@ gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     
     for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
-            return TRUE;
+            return true;
     }
     
     return FALSE;
@@ -87,7 +71,7 @@ gboolean gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     while (it != xmp_data.end()) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = xmp_data.erase(it);
-            erased = TRUE;
+            erased = true;
         } else {
             it++;
         }
@@ -172,48 +156,6 @@ gchar* gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, con
     return NULL;
 }
 
-gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-
-    Exiv2::XmpTextValue tv("");
-    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
-
-    switch (type) {
-      case GEXIV2_STRUCTURE_XA_NONE:
-        tv.read("");  // Clear the value
-        tv.setXmpArrayType(Exiv2::XmpValue::xaNone);
-        break;
-      case GEXIV2_STRUCTURE_XA_ALT:
-        tv.read("");
-        tv.setXmpArrayType(Exiv2::XmpValue::xaAlt);
-        break;
-      case GEXIV2_STRUCTURE_XA_BAG:
-        tv.read("");
-        tv.setXmpArrayType(Exiv2::XmpValue::xaBag);
-        break;
-      case GEXIV2_STRUCTURE_XA_SEQ:
-        tv.read("");
-        tv.setXmpArrayType(Exiv2::XmpValue::xaSeq);
-        break;
-      case GEXIV2_STRUCTURE_XA_LANG:
-      default:
-        g_warning("Invalid structure type.");
-        return FALSE;
-        break;
-    }
-
-    try {
-        xmp_data.add(Exiv2::XmpKey(tag), &tv);
-        return TRUE;
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-    
-    return FALSE;
-}
-
 gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* tag, 
     const gchar* value) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
@@ -224,7 +166,7 @@ gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* 
     try {
         self->priv->image->xmpData()[tag] = value;
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -261,7 +203,7 @@ gboolean gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* ta
     try {
         self->priv->image->xmpData()[tag] = value;
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -277,10 +219,8 @@ gchar** gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar*
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     try {
-        Exiv2::XmpKey key = Exiv2::XmpKey(tag);
-        Exiv2::XmpData::iterator it = xmp_data.findKey(key);
-
-        while (it != xmp_data.end() && it->count() == 0 && it->key() != key.key())
+        Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
+        while (it != xmp_data.end() && it->count() == 0)
             it++;
         
         if (it != xmp_data.end()) {
@@ -328,7 +268,7 @@ gboolean gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar
             ++val_it;
         }
         
-        return TRUE;
+        return true;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -358,84 +298,6 @@ const gchar* gexiv2_metadata_get_xmp_tag_description (const gchar* tag) {
     }
     
     return NULL;
-}
-
-const gchar* gexiv2_metadata_get_xmp_tag_type (const gchar* tag) {
-    g_return_val_if_fail(tag != NULL, NULL);
-    
-    try {
-        return Exiv2::TypeInfo::typeName(Exiv2::XmpProperties::propertyType(Exiv2::XmpKey(tag)));
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-    
-    return NULL;
-}
-
-GBytes* gexiv2_metadata_get_xmp_tag_raw (GExiv2Metadata *self, const gchar* tag) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-
-    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
-
-    try {
-        Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
-        while (it != xmp_data.end() && it->count() == 0)
-            it++;
-
-        if (it != xmp_data.end()) {
-            long size = it->size();
-            if( size > 0 ) {
-                gpointer data = g_malloc(size);
-                it->copy((Exiv2::byte*)data, Exiv2::invalidByteOrder);
-                return g_bytes_new_take(data, size);
-            }
-        }
-    } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
-    }
-
-    return NULL;
-}
-
-gboolean gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar* prefix) {
-    g_return_val_if_fail(name != NULL, FALSE);
-    g_return_val_if_fail(prefix != NULL, FALSE);
-
-    try {
-        Exiv2::XmpProperties::ns(prefix);
-    } catch (Exiv2::Error& error) {
-        // No namespace, OK to register
-        Exiv2::XmpProperties::registerNs(name, prefix);
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-gboolean gexiv2_metadata_unregister_xmp_namespace (const gchar* name) {
-    g_return_val_if_fail(name != NULL, FALSE);
-
-    std::string prefix = Exiv2::XmpProperties::prefix(name);
-
-    if (!prefix.empty()) {
-        // Unregister
-        Exiv2::XmpProperties::unregisterNs(name);
-
-        try {
-            Exiv2::XmpProperties::ns(prefix);
-        } catch (Exiv2::Error& error) {
-            // Namespace successfully removed
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-void gexiv2_metadata_unregister_all_xmp_namespaces (void) {
-    Exiv2::XmpProperties::unregisterNs();
 }
 
 G_END_DECLS

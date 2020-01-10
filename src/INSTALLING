@@ -1,0 +1,20 @@
+
+    gexiv2 Installation
+    -------------------
+
+    To build and install gexiv2, type the following commands:
+
+    $ ./configure
+    $ make
+    $ make install
+
+    * By default, gexiv2 will install under /usr/local.  The configure script
+      can customize the prefix directory.  Run ./configure --help for
+      instructions and other installation options.
+  
+    * You may need to execute "make install" as root (i.e. sudo make install)
+      if installing to system directories.
+
+
+    Copyright 2011-2012 Yorba Foundation
+

@@ -1,7 +1,7 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 # vim: tabstop=4 shiftwidth=4 expandtab
 #
-# Copyright (C) 2012 Robert Park <r@robru.ca>
+# Copyright (C) 2012 Robert Park <rbpark@exolucere.ca>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,12 +21,12 @@
 from datetime import datetime
 from fractions import Fraction
 
+from gi import _glib
 from gi.repository import GObject
 from ..overrides import override
-from ..module import get_introspection_module
+from ..importer import modules
 
-GExiv2 = get_introspection_module('GExiv2')
-
+GExiv2 = modules['GExiv2']._introspection_module
 __all__ = []
 
 DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
@@ -48,12 +48,12 @@ class Metadata(GExiv2.Metadata):
         super(Metadata, self).save_file(path or self._path)
     
     def get_date_time(self):
-        datestring = self['Exif.Photo.DateTimeOriginal']
+        datestring = super(Metadata, self).get_date_time()
         if datestring is not None:
             return datetime.strptime(datestring, DATE_FORMAT)
     
     def set_date_time(self, value):
-        self['Exif.Photo.DateTimeOriginal'] = value.strftime(DATE_FORMAT)
+        super(Metadata, self).set_date_time(value.strftime(DATE_FORMAT))
     
     def get_exposure_time(self):
         num, denom = super(Metadata, self).get_exposure_time()
@@ -78,9 +78,6 @@ class Metadata(GExiv2.Metadata):
     
     def get(self, key, default=None):
         return self.get_tag_string(key) if self.has_tag(key) else default
-
-    def get_raw(self, key):
-        return self.get_tag_raw(key).get_data()
     
     def __iter__(self):
         return iter(self.get_tags())
@@ -99,7 +96,7 @@ class Metadata(GExiv2.Metadata):
     
     def __delitem__(self, key):
         if self.has_tag(key):
-            self.clear_tag(key)
+            self.clear_tag(tagname)
         else:
             raise KeyError('%s: Unknown tag' % key)
     

@@ -20,8 +20,8 @@
 
 #include <exception>
 
-StreamIo::StreamIo (ManagedStreamCallbacks* callbacks)
-    : cb (callbacks), memio(NULL), is_open (FALSE), can_write(FALSE) {
+StreamIo::StreamIo (ManagedStreamCallbacks* cb)
+    : cb (cb), is_open (FALSE) {
     /* at least reading and seeking must be possible to read metatada */
     if ( ! cb->CanRead (cb->handle))
         throw std::exception ();
@@ -67,20 +67,20 @@ long StreamIo::write (const Exiv2::byte* data, long write_count) {
     if ( ! can_write)
         return 0;
     
-    long total_written_bytes = 0;
+    long written_bytes = 0;
     
-    while (write_count > total_written_bytes) {
+    while (write_count > written_bytes) {
     
-        int written = MIN (write_count - total_written_bytes, G_MAXINT32);
+        int write = MIN (write_count - written_bytes, G_MAXINT32);
         
         /* because of a marshalling problem on managed side, we shift the
            pointer and do NOT use the offset parameter */
-        cb->Write (cb->handle, (char*)data + total_written_bytes, 0, written);
+        cb->Write (cb->handle, (char*)data + written_bytes, 0, write);
         
-        total_written_bytes += written;
+        written_bytes += write;
     }
 
-    return total_written_bytes;
+    return written_bytes;
 }
 
 long StreamIo::write (Exiv2::BasicIo& src) {
@@ -131,8 +131,6 @@ int StreamIo::seek (long offset, Position position) {
         case (end):
             cb->Seek (cb->handle, offset, End);
             break;
-        default:
-            g_assert_not_reached ();
     }
     
     return 0;
@@ -142,14 +140,14 @@ long StreamIo::tell () const {
     return cb->Position (cb->handle);
 }
 
-StreamIo::size_type StreamIo::size () const {
+long StreamIo::size () const {
     return cb->Length (cb->handle);
 }
 
 int StreamIo::open () {
     seek (0, beg);
 
-    is_open = TRUE;
+    is_open = true;
     return 0;
 }
 
@@ -174,20 +172,20 @@ Exiv2::DataBuf StreamIo::read (long read_count) {
 }
 
 long StreamIo::read (Exiv2::byte* buf, long read_count) {
-    long total_read_bytes = 0;
-
-    while (read_count > total_read_bytes) {
+    long read_bytes = 0;
+    
+    while (read_count > read_bytes) {
         /* because of a marshalling problem on managed side, we shift the
            pointer and do NOT use the offset parameter */
-        int bytes_read = cb->Read (cb->handle, (char*)buf + total_read_bytes, 0, MIN (read_count - total_read_bytes, G_MAXINT32));
+        int read = cb->Read (cb->handle, (char*)buf + read_bytes, 0, MIN (read_count - read_bytes, G_MAXINT32));
         
-        if (bytes_read <= 0)
+        if (read <= 0)
             break;
         
-        total_read_bytes += bytes_read;
+        read_bytes += read;
     }
     
-    return total_read_bytes;
+    return read_bytes;
 }
 
 int StreamIo::getb () {
