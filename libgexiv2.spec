@@ -1,6 +1,6 @@
 Name:           libgexiv2
 Version:        0.5.0
-Release:        7%{?dist}
+Release:        9%{?dist}
 Summary:        Gexiv2 is a GObject-based wrapper around the Exiv2 library
 
 Group:          System Environment/Libraries
@@ -100,6 +100,12 @@ find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 %endif
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.5.0-9
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.5.0-8
+- Mass rebuild 2013-12-27
+
 * Wed May 08 2013 Richard Hughes <richard@hughsie.com> 0.5.0-7
 - RHEL7 does not have python3
 
