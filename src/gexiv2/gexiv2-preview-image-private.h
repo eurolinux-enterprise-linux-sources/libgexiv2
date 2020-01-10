@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_PREVIEW_IMAGE_PRIVATE_H__
-#define __GEXIV2_PREVIEW_IMAGE_PRIVATE_H__
+#ifndef GEXIV2_PREVIEW_IMAGE_PRIVATE_H
+#define GEXIV2_PREVIEW_IMAGE_PRIVATE_H
 
 #include <gexiv2/gexiv2-preview-image.h>
 #include <exiv2/preview.hpp>
@@ -22,9 +22,9 @@ struct _GExiv2PreviewImagePrivate
     gchar *extension;
 };
 
-GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager, 
+G_GNUC_INTERNAL GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager,
    const Exiv2::PreviewProperties &props);
 
 G_END_DECLS
 
-#endif /* __GEXIV2_PREVIEW_IMAGE_PRIVATE_H__ */
+#endif /* GEXIV2_PREVIEW_IMAGE_PRIVATE_H */

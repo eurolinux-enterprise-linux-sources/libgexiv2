@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<book xmlns="http://www.devhelp.net/book" title="gexiv2 Reference Manual" link="index.html" author="" name="gexiv2" version="2" language="c" online="http://developer.gnome.org/gexiv2/unstable/">
+  <chapters>
+    <sub name="GExiv2" link="ch01.html">
+      <sub name="Logging functionality" link="gexiv2-Logging-functionality.html"/>
+      <sub name="GExiv2Metadata" link="GExiv2Metadata.html"/>
+      <sub name="GExiv2PreviewImage" link="GExiv2PreviewImage.html"/>
+      <sub name="GExiv2PreviewProperties" link="GExiv2PreviewProperties.html"/>
+      <sub name="Library initialisation" link="gexiv2-Library-initialisation.html"/>
+      <sub name="gexiv2-version" link="gexiv2-gexiv2-version.html"/>
+    </sub>
+    <sub name="API Index" link="api-index-full.html"/>
+    <sub name="Index of new symbols in 0.10.6" link="api-index-0-10-6.html"/>
+    <sub name="Index of deprecated API" link="deprecated-api-index.html"/>
+    <sub name="Annotation Glossary" link="annotation-glossary.html"/>
+  </chapters>
+  <functions>
+    <keyword type="function" name="GExiv2LogHandler ()" link="gexiv2-Logging-functionality.html#GExiv2LogHandler"/>
+    <keyword type="function" name="gexiv2_log_get_level ()" link="gexiv2-Logging-functionality.html#gexiv2-log-get-level"/>
+    <keyword type="function" name="gexiv2_log_set_level ()" link="gexiv2-Logging-functionality.html#gexiv2-log-set-level"/>
+    <keyword type="function" name="gexiv2_log_get_handler ()" link="gexiv2-Logging-functionality.html#gexiv2-log-get-handler"/>
+    <keyword type="function" name="gexiv2_log_get_default_handler ()" link="gexiv2-Logging-functionality.html#gexiv2-log-get-default-handler"/>
+    <keyword type="function" name="gexiv2_log_set_handler ()" link="gexiv2-Logging-functionality.html#gexiv2-log-set-handler"/>
+    <keyword type="function" name="gexiv2_log_use_glib_logging ()" link="gexiv2-Logging-functionality.html#gexiv2-log-use-glib-logging"/>
+    <keyword type="enum" name="enum GExiv2LogLevel" link="gexiv2-Logging-functionality.html#GExiv2LogLevel"/>
+    <keyword type="function" name="gexiv2_metadata_new ()" link="GExiv2Metadata.html#gexiv2-metadata-new"/>
+    <keyword type="function" name="gexiv2_metadata_free ()" link="GExiv2Metadata.html#gexiv2-metadata-free" deprecated="0.10.3: Use g_object_unref() instead."/>
+    <keyword type="function" name="gexiv2_metadata_open_path ()" link="GExiv2Metadata.html#gexiv2-metadata-open-path"/>
+    <keyword type="function" name="gexiv2_metadata_open_buf ()" link="GExiv2Metadata.html#gexiv2-metadata-open-buf"/>
+    <keyword type="function" name="gexiv2_metadata_open_stream ()" link="GExiv2Metadata.html#gexiv2-metadata-open-stream"/>
+    <keyword type="function" name="gexiv2_metadata_from_app1_segment ()" link="GExiv2Metadata.html#gexiv2-metadata-from-app1-segment"/>
+    <keyword type="function" name="gexiv2_metadata_save_external ()" link="GExiv2Metadata.html#gexiv2-metadata-save-external" since="0.10.6"/>
+    <keyword type="function" name="gexiv2_metadata_save_file ()" link="GExiv2Metadata.html#gexiv2-metadata-save-file"/>
+    <keyword type="function" name="gexiv2_metadata_save_stream ()" link="GExiv2Metadata.html#gexiv2-metadata-save-stream"/>
+    <keyword type="function" name="gexiv2_metadata_has_tag ()" link="GExiv2Metadata.html#gexiv2-metadata-has-tag"/>
+    <keyword type="function" name="gexiv2_metadata_clear_tag ()" link="GExiv2Metadata.html#gexiv2-metadata-clear-tag"/>
+    <keyword type="function" name="gexiv2_metadata_clear ()" link="GExiv2Metadata.html#gexiv2-metadata-clear"/>
+    <keyword type="function" name="gexiv2_metadata_is_exif_tag ()" link="GExiv2Metadata.html#gexiv2-metadata-is-exif-tag"/>
+    <keyword type="function" name="gexiv2_metadata_is_iptc_tag ()" link="GExiv2Metadata.html#gexiv2-metadata-is-iptc-tag"/>
+    <keyword type="function" name="gexiv2_metadata_is_xmp_tag ()" link="GExiv2Metadata.html#gexiv2-metadata-is-xmp-tag"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_label ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-label"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_description ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-description"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_type ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-type"/>
+    <keyword type="function" name="gexiv2_metadata_get_supports_exif ()" link="GExiv2Metadata.html#gexiv2-metadata-get-supports-exif"/>
+    <keyword type="function" name="gexiv2_metadata_get_supports_iptc ()" link="GExiv2Metadata.html#gexiv2-metadata-get-supports-iptc"/>
+    <keyword type="function" name="gexiv2_metadata_get_supports_xmp ()" link="GExiv2Metadata.html#gexiv2-metadata-get-supports-xmp"/>
+    <keyword type="function" name="gexiv2_metadata_get_mime_type ()" link="GExiv2Metadata.html#gexiv2-metadata-get-mime-type"/>
+    <keyword type="function" name="gexiv2_metadata_get_pixel_width ()" link="GExiv2Metadata.html#gexiv2-metadata-get-pixel-width"/>
+    <keyword type="function" name="gexiv2_metadata_get_pixel_height ()" link="GExiv2Metadata.html#gexiv2-metadata-get-pixel-height"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_string ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-string"/>
+    <keyword type="function" name="gexiv2_metadata_set_tag_string ()" link="GExiv2Metadata.html#gexiv2-metadata-set-tag-string"/>
+    <keyword type="function" name="gexiv2_metadata_set_xmp_tag_struct ()" link="GExiv2Metadata.html#gexiv2-metadata-set-xmp-tag-struct"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_interpreted_string ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-interpreted-string"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_long ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-long"/>
+    <keyword type="function" name="gexiv2_metadata_set_tag_long ()" link="GExiv2Metadata.html#gexiv2-metadata-set-tag-long"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_multiple ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-multiple"/>
+    <keyword type="function" name="gexiv2_metadata_set_tag_multiple ()" link="GExiv2Metadata.html#gexiv2-metadata-set-tag-multiple"/>
+    <keyword type="function" name="gexiv2_metadata_get_tag_raw ()" link="GExiv2Metadata.html#gexiv2-metadata-get-tag-raw"/>
+    <keyword type="function" name="gexiv2_metadata_has_exif ()" link="GExiv2Metadata.html#gexiv2-metadata-has-exif"/>
+    <keyword type="function" name="gexiv2_metadata_clear_exif ()" link="GExiv2Metadata.html#gexiv2-metadata-clear-exif"/>
+    <keyword type="function" name="gexiv2_metadata_get_exif_tags ()" link="GExiv2Metadata.html#gexiv2-metadata-get-exif-tags"/>
+    <keyword type="function" name="gexiv2_metadata_get_exif_tag_rational ()" link="GExiv2Metadata.html#gexiv2-metadata-get-exif-tag-rational"/>
+    <keyword type="function" name="gexiv2_metadata_set_exif_tag_rational ()" link="GExiv2Metadata.html#gexiv2-metadata-set-exif-tag-rational"/>
+    <keyword type="function" name="gexiv2_metadata_get_exif_thumbnail ()" link="GExiv2Metadata.html#gexiv2-metadata-get-exif-thumbnail"/>
+    <keyword type="function" name="gexiv2_metadata_set_exif_thumbnail_from_file ()" link="GExiv2Metadata.html#gexiv2-metadata-set-exif-thumbnail-from-file"/>
+    <keyword type="function" name="gexiv2_metadata_set_exif_thumbnail_from_buffer ()" link="GExiv2Metadata.html#gexiv2-metadata-set-exif-thumbnail-from-buffer"/>
+    <keyword type="function" name="gexiv2_metadata_erase_exif_thumbnail ()" link="GExiv2Metadata.html#gexiv2-metadata-erase-exif-thumbnail"/>
+    <keyword type="function" name="gexiv2_metadata_has_xmp ()" link="GExiv2Metadata.html#gexiv2-metadata-has-xmp"/>
+    <keyword type="function" name="gexiv2_metadata_clear_xmp ()" link="GExiv2Metadata.html#gexiv2-metadata-clear-xmp"/>
+    <keyword type="function" name="gexiv2_metadata_generate_xmp_packet ()" link="GExiv2Metadata.html#gexiv2-metadata-generate-xmp-packet"/>
+    <keyword type="function" name="gexiv2_metadata_get_xmp_packet ()" link="GExiv2Metadata.html#gexiv2-metadata-get-xmp-packet"/>
+    <keyword type="function" name="gexiv2_metadata_get_xmp_tags ()" link="GExiv2Metadata.html#gexiv2-metadata-get-xmp-tags"/>
+    <keyword type="function" name="gexiv2_metadata_register_xmp_namespace ()" link="GExiv2Metadata.html#gexiv2-metadata-register-xmp-namespace"/>
+    <keyword type="function" name="gexiv2_metadata_unregister_xmp_namespace ()" link="GExiv2Metadata.html#gexiv2-metadata-unregister-xmp-namespace"/>
+    <keyword type="function" name="gexiv2_metadata_unregister_all_xmp_namespaces ()" link="GExiv2Metadata.html#gexiv2-metadata-unregister-all-xmp-namespaces"/>
+    <keyword type="function" name="gexiv2_metadata_has_iptc ()" link="GExiv2Metadata.html#gexiv2-metadata-has-iptc"/>
+    <keyword type="function" name="gexiv2_metadata_clear_iptc ()" link="GExiv2Metadata.html#gexiv2-metadata-clear-iptc"/>
+    <keyword type="function" name="gexiv2_metadata_get_iptc_tags ()" link="GExiv2Metadata.html#gexiv2-metadata-get-iptc-tags"/>
+    <keyword type="function" name="gexiv2_metadata_get_orientation ()" link="GExiv2Metadata.html#gexiv2-metadata-get-orientation"/>
+    <keyword type="function" name="gexiv2_metadata_set_orientation ()" link="GExiv2Metadata.html#gexiv2-metadata-set-orientation"/>
+    <keyword type="function" name="gexiv2_metadata_get_metadata_pixel_width ()" link="GExiv2Metadata.html#gexiv2-metadata-get-metadata-pixel-width"/>
+    <keyword type="function" name="gexiv2_metadata_get_metadata_pixel_height ()" link="GExiv2Metadata.html#gexiv2-metadata-get-metadata-pixel-height"/>
+    <keyword type="function" name="gexiv2_metadata_set_metadata_pixel_width ()" link="GExiv2Metadata.html#gexiv2-metadata-set-metadata-pixel-width"/>
+    <keyword type="function" name="gexiv2_metadata_set_metadata_pixel_height ()" link="GExiv2Metadata.html#gexiv2-metadata-set-metadata-pixel-height"/>
+    <keyword type="function" name="gexiv2_metadata_get_comment ()" link="GExiv2Metadata.html#gexiv2-metadata-get-comment"/>
+    <keyword type="function" name="gexiv2_metadata_set_comment ()" link="GExiv2Metadata.html#gexiv2-metadata-set-comment"/>
+    <keyword type="function" name="gexiv2_metadata_clear_comment ()" link="GExiv2Metadata.html#gexiv2-metadata-clear-comment"/>
+    <keyword type="function" name="gexiv2_metadata_get_exposure_time ()" link="GExiv2Metadata.html#gexiv2-metadata-get-exposure-time"/>
+    <keyword type="function" name="gexiv2_metadata_get_fnumber ()" link="GExiv2Metadata.html#gexiv2-metadata-get-fnumber"/>
+    <keyword type="function" name="gexiv2_metadata_get_focal_length ()" link="GExiv2Metadata.html#gexiv2-metadata-get-focal-length"/>
+    <keyword type="function" name="gexiv2_metadata_get_iso_speed ()" link="GExiv2Metadata.html#gexiv2-metadata-get-iso-speed"/>
+    <keyword type="function" name="gexiv2_metadata_get_gps_longitude ()" link="GExiv2Metadata.html#gexiv2-metadata-get-gps-longitude"/>
+    <keyword type="function" name="gexiv2_metadata_get_gps_latitude ()" link="GExiv2Metadata.html#gexiv2-metadata-get-gps-latitude"/>
+    <keyword type="function" name="gexiv2_metadata_get_gps_altitude ()" link="GExiv2Metadata.html#gexiv2-metadata-get-gps-altitude"/>
+    <keyword type="function" name="gexiv2_metadata_get_gps_info ()" link="GExiv2Metadata.html#gexiv2-metadata-get-gps-info"/>
+    <keyword type="function" name="gexiv2_metadata_set_gps_info ()" link="GExiv2Metadata.html#gexiv2-metadata-set-gps-info"/>
+    <keyword type="function" name="gexiv2_metadata_delete_gps_info ()" link="GExiv2Metadata.html#gexiv2-metadata-delete-gps-info"/>
+    <keyword type="function" name="gexiv2_metadata_get_preview_properties ()" link="GExiv2Metadata.html#gexiv2-metadata-get-preview-properties"/>
+    <keyword type="function" name="gexiv2_metadata_get_preview_image ()" link="GExiv2Metadata.html#gexiv2-metadata-get-preview-image"/>
+    <keyword type="function" name="Stream_CanSeek ()" link="GExiv2Metadata.html#Stream-CanSeek"/>
+    <keyword type="function" name="Stream_CanRead ()" link="GExiv2Metadata.html#Stream-CanRead"/>
+    <keyword type="function" name="Stream_CanWrite ()" link="GExiv2Metadata.html#Stream-CanWrite"/>
+    <keyword type="function" name="Stream_Length ()" link="GExiv2Metadata.html#Stream-Length"/>
+    <keyword type="function" name="Stream_Position ()" link="GExiv2Metadata.html#Stream-Position"/>
+    <keyword type="function" name="Stream_Read ()" link="GExiv2Metadata.html#Stream-Read"/>
+    <keyword type="function" name="Stream_Write ()" link="GExiv2Metadata.html#Stream-Write"/>
+    <keyword type="function" name="Stream_Seek ()" link="GExiv2Metadata.html#Stream-Seek"/>
+    <keyword type="function" name="Stream_Flush ()" link="GExiv2Metadata.html#Stream-Flush"/>
+    <keyword type="enum" name="enum GExiv2Orientation" link="GExiv2Metadata.html#GExiv2Orientation"/>
+    <keyword type="enum" name="enum GExiv2StructureType" link="GExiv2Metadata.html#GExiv2StructureType"/>
+    <keyword type="enum" name="enum GExiv2XmpFormatFlags" link="GExiv2Metadata.html#GExiv2XmpFormatFlags"/>
+    <keyword type="struct" name="struct GExiv2Metadata" link="GExiv2Metadata.html#GExiv2Metadata-struct"/>
+    <keyword type="enum" name="enum WrapperSeekOrigin" link="GExiv2Metadata.html#WrapperSeekOrigin"/>
+    <keyword type="struct" name="ManagedStreamCallbacks" link="GExiv2Metadata.html#ManagedStreamCallbacks"/>
+    <keyword type="function" name="gexiv2_preview_image_free ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-free" deprecated="0.10.3: Use g_object_unref() instead."/>
+    <keyword type="function" name="gexiv2_preview_image_get_data ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-get-data"/>
+    <keyword type="function" name="gexiv2_preview_image_get_mime_type ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-get-mime-type"/>
+    <keyword type="function" name="gexiv2_preview_image_get_extension ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-get-extension"/>
+    <keyword type="function" name="gexiv2_preview_image_get_width ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-get-width"/>
+    <keyword type="function" name="gexiv2_preview_image_get_height ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-get-height"/>
+    <keyword type="function" name="gexiv2_preview_image_write_file ()" link="GExiv2PreviewImage.html#gexiv2-preview-image-write-file"/>
+    <keyword type="function" name="gexiv2_preview_properties_get_mime_type ()" link="GExiv2PreviewProperties.html#gexiv2-preview-properties-get-mime-type"/>
+    <keyword type="function" name="gexiv2_preview_properties_get_extension ()" link="GExiv2PreviewProperties.html#gexiv2-preview-properties-get-extension"/>
+    <keyword type="function" name="gexiv2_preview_properties_get_size ()" link="GExiv2PreviewProperties.html#gexiv2-preview-properties-get-size"/>
+    <keyword type="function" name="gexiv2_preview_properties_get_width ()" link="GExiv2PreviewProperties.html#gexiv2-preview-properties-get-width"/>
+    <keyword type="function" name="gexiv2_preview_properties_get_height ()" link="GExiv2PreviewProperties.html#gexiv2-preview-properties-get-height"/>
+    <keyword type="function" name="gexiv2_initialize ()" link="gexiv2-Library-initialisation.html#gexiv2-initialize"/>
+    <keyword type="macro" name="GEXIV2_CHECK_VERSION()" link="gexiv2-gexiv2-version.html#GEXIV2-CHECK-VERSION:CAPS"/>
+    <keyword type="function" name="gexiv2_get_version ()" link="gexiv2-gexiv2-version.html#gexiv2-get-version"/>
+    <keyword type="macro" name="GEXIV2_MAJOR_VERSION" link="gexiv2-gexiv2-version.html#GEXIV2-MAJOR-VERSION:CAPS"/>
+    <keyword type="macro" name="GEXIV2_MINOR_VERSION" link="gexiv2-gexiv2-version.html#GEXIV2-MINOR-VERSION:CAPS"/>
+    <keyword type="macro" name="GEXIV2_MICRO_VERSION" link="gexiv2-gexiv2-version.html#GEXIV2-MICRO-VERSION:CAPS"/>
+    <keyword type="constant" name="GEXIV2_LOG_LEVEL_DEBUG" link="gexiv2-Logging-functionality.html#GEXIV2-LOG-LEVEL-DEBUG:CAPS"/>
+    <keyword type="constant" name="GEXIV2_LOG_LEVEL_INFO" link="gexiv2-Logging-functionality.html#GEXIV2-LOG-LEVEL-INFO:CAPS"/>
+    <keyword type="constant" name="GEXIV2_LOG_LEVEL_WARN" link="gexiv2-Logging-functionality.html#GEXIV2-LOG-LEVEL-WARN:CAPS"/>
+    <keyword type="constant" name="GEXIV2_LOG_LEVEL_ERROR" link="gexiv2-Logging-functionality.html#GEXIV2-LOG-LEVEL-ERROR:CAPS"/>
+    <keyword type="constant" name="GEXIV2_LOG_LEVEL_MUTE" link="gexiv2-Logging-functionality.html#GEXIV2-LOG-LEVEL-MUTE:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_MIN" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-MIN:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_UNSPECIFIED" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-UNSPECIFIED:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_NORMAL" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-NORMAL:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_HFLIP" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-HFLIP:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_ROT_180" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-ROT-180:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_VFLIP" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-VFLIP:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_ROT_90_HFLIP" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-ROT-90-HFLIP:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_ROT_90" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-ROT-90:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_ROT_90_VFLIP" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-ROT-90-VFLIP:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_ROT_270" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-ROT-270:CAPS"/>
+    <keyword type="constant" name="GEXIV2_ORIENTATION_MAX" link="GExiv2Metadata.html#GEXIV2-ORIENTATION-MAX:CAPS"/>
+    <keyword type="constant" name="GEXIV2_STRUCTURE_XA_NONE" link="GExiv2Metadata.html#GEXIV2-STRUCTURE-XA-NONE:CAPS"/>
+    <keyword type="constant" name="GEXIV2_STRUCTURE_XA_ALT" link="GExiv2Metadata.html#GEXIV2-STRUCTURE-XA-ALT:CAPS"/>
+    <keyword type="constant" name="GEXIV2_STRUCTURE_XA_BAG" link="GExiv2Metadata.html#GEXIV2-STRUCTURE-XA-BAG:CAPS"/>
+    <keyword type="constant" name="GEXIV2_STRUCTURE_XA_SEQ" link="GExiv2Metadata.html#GEXIV2-STRUCTURE-XA-SEQ:CAPS"/>
+    <keyword type="constant" name="GEXIV2_STRUCTURE_XA_LANG" link="GExiv2Metadata.html#GEXIV2-STRUCTURE-XA-LANG:CAPS"/>
+    <keyword type="constant" name="GEXIV2_OMIT_PACKET_WRAPPER" link="GExiv2Metadata.html#GEXIV2-OMIT-PACKET-WRAPPER:CAPS"/>
+    <keyword type="constant" name="GEXIV2_READ_ONLY_PACKET" link="GExiv2Metadata.html#GEXIV2-READ-ONLY-PACKET:CAPS"/>
+    <keyword type="constant" name="GEXIV2_USE_COMPACT_FORMAT" link="GExiv2Metadata.html#GEXIV2-USE-COMPACT-FORMAT:CAPS"/>
+    <keyword type="constant" name="GEXIV2_INCLUDE_THUMBNAIL_PAD" link="GExiv2Metadata.html#GEXIV2-INCLUDE-THUMBNAIL-PAD:CAPS"/>
+    <keyword type="constant" name="GEXIV2_EXACT_PACKET_LENGTH" link="GExiv2Metadata.html#GEXIV2-EXACT-PACKET-LENGTH:CAPS"/>
+    <keyword type="constant" name="GEXIV2_WRITE_ALIAS_COMMENTS" link="GExiv2Metadata.html#GEXIV2-WRITE-ALIAS-COMMENTS:CAPS"/>
+    <keyword type="constant" name="GEXIV2_OMIT_ALL_FORMATTING" link="GExiv2Metadata.html#GEXIV2-OMIT-ALL-FORMATTING:CAPS"/>
+    <keyword type="constant" name="Begin" link="GExiv2Metadata.html#Begin"/>
+    <keyword type="constant" name="Current" link="GExiv2Metadata.html#Current"/>
+    <keyword type="constant" name="End" link="GExiv2Metadata.html#End"/>
+    <keyword type="member" name="ManagedStreamCallbacks.handle" link="GExiv2Metadata.html#ManagedStreamCallbacks.handle"/>
+    <keyword type="member" name="ManagedStreamCallbacks.CanSeek" link="GExiv2Metadata.html#ManagedStreamCallbacks.CanSeek"/>
+    <keyword type="member" name="ManagedStreamCallbacks.CanRead" link="GExiv2Metadata.html#ManagedStreamCallbacks.CanRead"/>
+    <keyword type="member" name="ManagedStreamCallbacks.CanWrite" link="GExiv2Metadata.html#ManagedStreamCallbacks.CanWrite"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Length" link="GExiv2Metadata.html#ManagedStreamCallbacks.Length"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Position" link="GExiv2Metadata.html#ManagedStreamCallbacks.Position"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Read" link="GExiv2Metadata.html#ManagedStreamCallbacks.Read"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Write" link="GExiv2Metadata.html#ManagedStreamCallbacks.Write"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Seek" link="GExiv2Metadata.html#ManagedStreamCallbacks.Seek"/>
+    <keyword type="member" name="ManagedStreamCallbacks.Flush" link="GExiv2Metadata.html#ManagedStreamCallbacks.Flush"/>
+  </functions>
+</book>

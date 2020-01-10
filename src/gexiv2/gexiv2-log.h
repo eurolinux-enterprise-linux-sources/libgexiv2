@@ -7,27 +7,47 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_LOG_H__
-#define __GEXIV2_LOG_H__
+#ifndef GEXIV2_LOG_H
+#define GEXIV2_LOG_H
 
 #include <glib.h>
 
+/**
+ * SECTION:gexiv2-log
+ * @title: Logging functionality
+ * @short_description: Utility functions related to GExiv2's and Exiv2's logging.
+ *
+ * The functions in this modules can be used do configure the log level of
+ * GExiv2 and Exiv2 in terms of what to log (see gexiv2_log_set_level()) and
+ * how. Either a custom log handler can be used or GLib's logging mechanisms.
+ */
+
 G_BEGIN_DECLS
 
+/**
+ * GExiv2LogLevel:
+ * @GEXIV2_LOG_LEVEL_DEBUG: Log level for debugging
+ * @GEXIV2_LOG_LEVEL_INFO: Log level for informational messages
+ * @GEXIV2_LOG_LEVEL_WARN: Log level for warning messages
+ * @GEXIV2_LOG_LEVEL_ERROR: Log level for error messages
+ * @GEXIV2_LOG_LEVEL_MUTE: Suppress all log messages
+ *
+ * GExiv2 log levels
+ */
 typedef enum {
-	GEXIV2_LOG_LEVEL_DEBUG	= 0,
-	GEXIV2_LOG_LEVEL_INFO	= 1,
-	GEXIV2_LOG_LEVEL_WARN	= 2,
-	GEXIV2_LOG_LEVEL_ERROR	= 3,
-	GEXIV2_LOG_LEVEL_MUTE	= 4
+    GEXIV2_LOG_LEVEL_DEBUG = 0,
+    GEXIV2_LOG_LEVEL_INFO  = 1,
+    GEXIV2_LOG_LEVEL_WARN  = 2,
+    GEXIV2_LOG_LEVEL_ERROR = 3,
+    GEXIV2_LOG_LEVEL_MUTE  = 4
 } GExiv2LogLevel;
 
 /**
  * GExiv2LogHandler:
- * @level: The #Gexiv2LogLevel for the particular message
+ * @level: The #GExiv2LogLevel for the particular message
  * @msg: (in): The log message
  *
- * The log handler can be set by #gexiv2_log_set_handler.  When set, the log handler will receive
+ * The log handler can be set by gexiv2_log_set_handler().  When set, the log handler will receive
  * all log messages emitted by Exiv2 and gexiv2.  It's up to the handler to decide where (and if)
  * the images are displayed or stored.
  */
@@ -76,15 +96,15 @@ void				gexiv2_log_set_handler(GExiv2LogHandler handler);
  * gexiv2_log_use_glib_logging:
  *
  * When called, gexiv2 will install it's own #GExiv2LogHandler which redirects all Exiv2 and gexiv2
- * log messages to GLib's logging calls (g_debug, g_message, g_warning, and g_critical for the
+ * log messages to GLib's logging calls (g_debug(), g_message(), g_warning(), and g_critical() for the
  * respective #GExiv2LogLevel value).  #GEXIV2_LOG_LEVEL_MUTE logs are dropped.
  *
  * One advantage to using this is that GLib's logging control and handlers can be used rather than
- * gexiv2's ad hoc scheme.  It also means an application can use GLib logging and have all its
+ * GExiv2's ad hoc scheme.  It also means an application can use GLib logging and have all its
  * messages routed through the same calls.
  */
 void				gexiv2_log_use_glib_logging(void);
 
 G_END_DECLS
 
-#endif /* __GEXIV2_LOG_H__ */
+#endif /* GEXIV2_LOG_H */

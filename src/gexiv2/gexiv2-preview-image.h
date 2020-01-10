@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_PREVIEW_IMAGE_H__
-#define __GEXIV2_PREVIEW_IMAGE_H__
+#ifndef GEXIV2_PREVIEW_IMAGE_H
+#define GEXIV2_PREVIEW_IMAGE_H
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -33,13 +33,13 @@ G_BEGIN_DECLS
 #define GEXIV2_PREVIEW_IMAGE_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImageClass))
 	
-#define GEXIV2_PREVIEW_IMAGE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImagePrivate))
 
 
 typedef struct _GExiv2PreviewImage			GExiv2PreviewImage;
 typedef struct _GExiv2PreviewImageClass		GExiv2PreviewImageClass;
 typedef struct _GExiv2PreviewImagePrivate	GExiv2PreviewImagePrivate;
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewImage, g_object_unref)
 
 struct _GExiv2PreviewImage
 {
@@ -60,6 +60,7 @@ GType 			gexiv2_preview_image_get_type			(void);
 
 /**
  * gexiv2_preview_image_free:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Releases the preview image and all associated memory.
  *
@@ -73,6 +74,7 @@ void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_data:
+ * @self: An instance of #GExiv2PreviewImage
  * @size: (out) (skip): The size of the buffer holding the data
  *
  * Returns: (transfer none) (array length=size): The raw image data
@@ -81,6 +83,7 @@ const guint8*	gexiv2_preview_image_get_data			(GExiv2PreviewImage *self, guint32
 
 /**
  * gexiv2_preview_image_get_mime_type:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: (transfer none): The preview image's MIME type.
  */
@@ -88,6 +91,7 @@ const gchar*	gexiv2_preview_image_get_mime_type		(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_extension:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: (transfer none): The preview image's recommended file extension.
  */
@@ -95,6 +99,7 @@ const gchar*	gexiv2_preview_image_get_extension		(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_width:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: The preview image's display width in pixels.
  */
@@ -102,6 +107,7 @@ guint32			gexiv2_preview_image_get_width			(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_height:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: The preview image's display height in pixels.
  */
@@ -109,6 +115,7 @@ guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_write_file:
+ * @self: An instance of #GExiv2PreviewImage
  * @path: (in): The file path to write the preview image to.
  *
  * Returns: The number of bytes written to the file.
@@ -118,5 +125,5 @@ glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar
 
 G_END_DECLS
 
-#endif /* __GEXIV2_PREVIEW_IMAGE_H__ */
+#endif /* GEXIV2_PREVIEW_IMAGE_H */
 

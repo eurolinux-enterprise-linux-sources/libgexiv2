@@ -13,10 +13,13 @@ G_BEGIN_DECLS
 
 #define GEXIV2_MAJOR_VERSION 0
 #define GEXIV2_MINOR_VERSION 10
-#define GEXIV2_MICRO_VERSION 4
+#define GEXIV2_MICRO_VERSION 8
 
 /**
  * GEXIV2_CHECK_VERSION:
+ * @major: the major version to check for
+ * @minor: the minor version to check for
+ * @micro: the micro version to check for
  *
  * Returns: TRUE if the gexiv2 library version is greater than or equal to the supplied version
  * requirement.

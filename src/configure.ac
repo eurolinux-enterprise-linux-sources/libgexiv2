@@ -1,11 +1,16 @@
-AC_INIT([gexiv2], [0.10.4], [gexiv2-list@gnome.org], [gexiv2], [https://wiki.gnome.org/Projects/gexiv2])
-AC_PREREQ(2.54)
+AC_INIT([gexiv2],
+        [0.10.8],
+        [https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],
+        [gexiv2],
+        [https://wiki.gnome.org/Projects/gexiv2])
+AC_PREREQ([2.69])
 
 AC_CONFIG_MACRO_DIR([m4])
 
 # Will install auxiliary build tools (depcomp, install-sh, missing...) under build-aux/
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar subdir-objects])
+AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar
+                  subdir-objects -Wno-portability])
 
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
@@ -24,7 +29,7 @@ PKG_PROG_PKG_CONFIG(0.26)
 
 m4_define([gexiv2_major_version], [0])
 m4_define([gexiv2_minor_version], [10])
-m4_define([gexiv2_micro_version], [4])
+m4_define([gexiv2_micro_version], [8])
 m4_define([gexiv2_real_version],
           [gexiv2_major_version.gexiv2_minor_version.gexiv2_micro_version])
 m4_define([gexiv2_version], [gexiv2_real_version])
@@ -120,6 +125,14 @@ fi
 
 GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
+AC_PATH_PROGS([PYTHON2_PATH],[python2],[:])
+AC_SUBST(PYTHON2_PATH)
+AM_CONDITIONAL([PYTHON2_PATH], [test "x$PYTHON2_PATH" != "x:"])
+
+AC_PATH_PROGS([PYTHON3_PATH],[python3],[:])
+AC_SUBST(PYTHON3_PATH)
+AM_CONDITIONAL([PYTHON3_PATH], [test "x$PYTHON3_PATH" != "x:"])
+
 AC_ARG_WITH([python2-girdir],
             AS_HELP_STRING([--with-python2-girdir],
                              [Set the GI override file install dir]),
@@ -134,22 +147,28 @@ AC_ARG_WITH([python3-girdir],
 
 enable_python2="no (introspection disabled)"
 enable_python3="no (introspection disabled)"
-if test "x$found_introspection" = "xyes"; then
+PYTHON_CODE="import gi; print(gi._overridesdir)"
+AS_IF([test "x$found_introspection" = "xyes"],
+      [
     # Used to determine where Python wants the .gi file to be installed ...
     # if Python is not installed, PYTHON2 and PYTHON3 will be empty
-    PYTHON="import gi; print(gi._overridesdir)"
     AS_IF([test "x$ac_py2girdir" = "x"],
     [
-        PYTHON2_GIDIR=$(python2 -c "$PYTHON")
+        AS_IF([test "x$PYTHON2_PATH" != "x:"],
+              [PYTHON2_GIDIR=$($PYTHON2_PATH -c "$PYTHON_CODE")],
+              [PYTHON2_GIDIR=""])
     ],
     [
         PYTHON2_GIDIR=$ac_py2girdir
     ])
     AC_MSG_RESULT([Python2 GObject Introspection directory: $PYTHON2_GIDIR])
 
+
     AS_IF([test "x$ac_py3girdir" = "x"],
     [
-        PYTHON3_GIDIR=$(python3 -c "$PYTHON")
+        AS_IF([test "x$PYTHON3_PATH" != "x:"],
+              [PYTHON3_GIDIR=$($PYTHON3_PATH -c "$PYTHON_CODE")],
+              [PYTHON3_GIDIR=""])
     ],
     [
         PYTHON3_GIDIR=$ac_py3girdir
@@ -163,7 +182,7 @@ if test "x$found_introspection" = "xyes"; then
 
     AC_SUBST(PYTHON2_GIDIR)
     AC_SUBST(PYTHON3_GIDIR)
-fi
+    ])
 AM_CONDITIONAL(HAS_PYTHON2, test "x$PYTHON2_GIDIR" != "x")
 AM_CONDITIONAL(HAS_PYTHON3, test "x$PYTHON3_GIDIR" != "x")
 
@@ -171,32 +190,8 @@ AM_CONDITIONAL(HAS_PYTHON3, test "x$PYTHON3_GIDIR" != "x")
 # Tests and utilities #
 #######################
 
-AC_ARG_ENABLE(tests, [  --enable-tests          enable tests and utilities (requires Vala) [[default=no]]],
-              if eval "test x$enable_tests = xno"; then
-              enable_tests=no
-              else
-              enable_tests=yes
-              fi,
-              enable_tests=no)
-
-if test "x$enable_tests" != "xno"; then
-    AC_CHECK_TOOL([VALAC], [valac], [:])
-    if test "x$VALAC" = "x:"; then
-        enable_tests="no (missing valac)"
-    fi
-fi
-AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests" = "xyes")
-
-AC_MSG_CHECKING([enable tests])
-AC_MSG_RESULT([$enable_tests])
-
-###################
-# Check Word Size #
-###################
-
-AC_CHECK_SIZEOF([int *])
-AC_SUBST(SIZEOF_INT_P)
-AM_CONDITIONAL(WORD_64, test "x$SIZEOF_INT_P" = "x8" )
+AC_CHECK_TOOL([VALAC], [valac], [:])
+AM_CONDITIONAL([HAVE_VALAC], [test "x$VALAC" != "x:"])
 
 ###########################
 # Check target architecture
@@ -211,28 +206,22 @@ case x"$target" in
 esac
 AC_MSG_RESULT([$target_or_host])
 
+#################
+# Check for Win32
+#################
+
+AC_MSG_CHECKING([OS X platform])
 case "$target_or_host" in
-    i*86-*-*)
-        have_x86=yes
-        AC_DEFINE(ARCH_X86, 1, [Define to 1 if you are compiling for ix86.])
-    ;;
-    x86_64-*-*)
-        have_x86=yes
-        AC_DEFINE(ARCH_X86, 1, [Define to 1 if you are compiling for ix86.])
-        AC_DEFINE(ARCH_X86_64, 1, [Define to 1 if you are compiling for amd64.])
-    ;;
-    ppc-*-* | powerpc-*)
-        have_ppc=yes
-        AC_DEFINE(ARCH_PPC, 1, [Define to 1 if you are compiling for PowerPC.])
-    ;;
-    ppc64-*-* | powerpc64-*)
-        have_ppc=yes
-        AC_DEFINE(ARCH_PPC, 1, [Define to 1 if you are compiling for PowerPC.])
-        AC_DEFINE(ARCH_PPC64, 1, [Define to 1 if you are compiling for PowerPC64.])
+    *-*-darwin*)
+        platform_darwin=yes
     ;;
     *)
+        platform_darwin=no
     ;;
 esac
+AC_MSG_RESULT([$platform_darwin])
+AM_CONDITIONAL(PLATFORM_DARWIN, test "$platform_win32" = "yes")
+
 
 #################
 # Check for Win32
@@ -256,6 +245,21 @@ AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 
 VAPIGEN_CHECK
 
+###########
+# gtk-doc #
+###########
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
+
+################
+# glib-mkenums #
+################
+AC_MSG_CHECKING([for glib-mkenums script])
+GLIB_MKENUMS=`$PKG_CONFIG --variable=glib_mkenums glib-2.0`
+AS_IF([test "x$GLIB_MKENUMS" = "x"],
+    [AC_MSG_ERROR([glib-mkenums not listed in glib-2.0 pkg-config file])],
+    [AC_SUBST([GLIB_MKENUMS])
+     AC_MSG_RESULT([$GLIB_MKENUMS])])
+
 ##############
 # Generation #
 ##############
@@ -263,7 +267,11 @@ VAPIGEN_CHECK
 AC_CONFIG_FILES([
 Makefile
 gexiv2.pc:gexiv2.pc.in
+docs/Makefile
+docs/reference/Makefile
 ])
+AC_CONFIG_FILES([test/python2-test], [chmod +x test/python2-test])
+AC_CONFIG_FILES([test/python3-test], [chmod +x test/python3-test])
 
 AC_OUTPUT
 
@@ -274,7 +282,6 @@ Options:
     Introspection:      $found_introspection
     Python2 binding:    $enable_python2
     Python3 binding:    $enable_python3
-    Tests and utils:    $enable_tests
 ])
 
 if test "x$enable_tests" = "xyes"; then

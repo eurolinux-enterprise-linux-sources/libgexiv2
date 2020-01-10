@@ -1,27 +1,19 @@
 Name:           libgexiv2
-Version:        0.10.4
-Release:        4%{?dist}
+Version:        0.10.8
+Release:        1%{?dist}
 Summary:        Gexiv2 is a GObject-based wrapper around the Exiv2 library
 
 License:        GPLv2+
-URL:            http://trac.yorba.org/wiki/gexiv2 
+URL:            https://wiki.gnome.org/Projects/gexiv2
 Source0:        https://download.gnome.org/sources/gexiv2/0.10/gexiv2-%{version}.tar.xz
 
-Patch0:         %{name}-pkgconf.patch
-
-# https://bugzilla.redhat.com/show_bug.cgi?id=1486570
-Patch1:         %{name}-Adapt-to-Exiv2-BasicIo-API-change.patch
-
-BuildRequires:  exiv2-devel >= 0.26
+BuildRequires:  exiv2-devel
 BuildRequires:  gobject-introspection-devel
 BuildRequires:  libtool
 BuildRequires:  python2-devel
 BuildRequires:  python-gobject-base
-
-# For tests
 BuildRequires:  vala
-
-%if !0%{?rhel}
+%if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:  python3-devel
 BuildRequires:  python3-gobject-base
 %endif
@@ -29,7 +21,6 @@ BuildRequires:  python3-gobject-base
 %description
 libgexiv2 is a GObject-based wrapper around the Exiv2 library. 
 It makes the basic features of Exiv2 available to GNOME applications.
-
 
 %package        devel
 Summary:        Development files for %{name}
@@ -50,7 +41,7 @@ Obsoletes:      libgexiv2-python2 < 0.10.4
 %description -n python2-gexiv2
 This package contains the python2 bindings for %{name}
 
-%if !0%{?rhel}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %package -n     python3-gexiv2
 Summary:        Python3 bindings for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
@@ -65,32 +56,21 @@ This package contains the python3 bindings for %{name}
 
 %prep
 %setup -q -n gexiv2-%{version}
-%patch0 -p1
-%patch1 -p1
 
 %build
-%configure --enable-tests --enable-introspection --enable-static=no --enable-shared=yes
+%configure --enable-introspection --enable-static=no --enable-shared=yes
 %make_build
 
 %install
 %make_install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-# move introspection typelib to correct location
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/girepository-1.0
-mv $RPM_BUILD_ROOT%{_datadir}/gir-1.0/GExiv2-0.10.typelib \
-   $RPM_BUILD_ROOT%{_libdir}/girepository-1.0/GExiv2-0.10.typelib
-
-# Can't get this to work at the moment
-# https://bugzilla.gnome.org/show_bug.cgi?id=723790
-#%check
-#make tests
-
+%check
+make check
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
-
 
 %files
 %license COPYING
@@ -103,6 +83,9 @@ mv $RPM_BUILD_ROOT%{_datadir}/gir-1.0/GExiv2-0.10.typelib \
 %{_datadir}/gir-1.0/GExiv2-0.10.gir
 %{_libdir}/libgexiv2.so
 %{_libdir}/pkgconfig/gexiv2.pc
+%dir %{_datadir}/gtk-doc
+%dir %{_datadir}/gtk-doc/html
+%{_datadir}/gtk-doc/html/gexiv2/
 %dir %{_datadir}/vala
 %dir %{_datadir}/vala/vapi
 %{_datadir}/vala/vapi/gexiv2.vapi
@@ -110,13 +93,17 @@ mv $RPM_BUILD_ROOT%{_datadir}/gir-1.0/GExiv2-0.10.typelib \
 %files -n python2-gexiv2
 %{python2_sitearch}/gi/overrides/GExiv2.py*
 
-%if !0%{?rhel}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %files -n python3-gexiv2
 %{python3_sitearch}/gi/overrides/GExiv2.py
 %{python3_sitearch}/gi/overrides/__pycache__/GExiv2*
 %endif
 
 %changelog
+* Tue Feb 06 2018 Kalev Lember <klember@redhat.com> - 0.10.8-1
+- Update to 0.10.8
+- Resolves: #1570008
+
 * Wed Oct 11 2017 Debarshi Ray <rishi@fedoraproject.org> - 0.10.4-4
 - Ensure that the new exiv2 soname is used during the build
 - Adapt to Exiv2::BasicIo API change

@@ -1,10 +1,14 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
+SUBDIRS = . docs
+
+CLEANFILES =
+
 # Installation directories.
 pkgconfigdir     = $(libdir)/pkgconfig
 GEXIV2_publicdir = $(includedir)/gexiv2
 girdir           = $(datadir)/gir-1.0
-typelibdir       = $(datadir)/gir-1.0
+typelibdir       = $(libdir)/girepository-1.0
 py2gidir         = $(PYTHON2_GIDIR)
 py3gidir         = $(PYTHON3_GIDIR)
 vapidir          = $(datadir)/vala/vapi
@@ -15,17 +19,55 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--with-python3-girdir='$${libdir}/python3/dist-packages/gi/overrides' \
 	--enable-introspection
 
+BUILT_SOURCES = \
+	gexiv2-enums.cpp \
+	gexiv2-enums.h
+
+CLEANFILES += $(BUILT_SOURCES)
+
 # Extra package files. #
 EXTRA_DIST = \
 	@PACKAGE_NAME@.pc.in	\
 	GExiv2.py				\
-	@PACKAGE_NAME@.vapi		\
 	gexiv2/gexiv2-version.m4 \
 	$(TYPELIB_FILES) \
-	test/sample-author-badencoding.jpg \
+	test/data/sample-author-badencoding.jpg \
+	test/data/original.jpg \
+	test/data/CaorVN.jpeg \
+	test/data/no-fnumber.jpg \
 	test/gexiv2-dump.vala \
-	test/python/gexiv2.py
+	test/python/gexiv2.py \
+	test/python/test_metadata.py \
+	docs/meson.build \
+	docs/reference/meson.build \
+	docs/reference/xml/meson.build \
+	docs/reference/xml/gtkdocentities.ent.in \
+	meson.build \
+	gexiv2/meson.build \
+	gexiv2/gexiv2-enums.cpp.template \
+	gexiv2/gexiv2-enums.h.template \
+	gexiv2/gexiv2-version.h.meson \
+	gexiv2/gexiv2.map \
+	vapi/meson.build \
+	test/meson.build \
+	meson_options.txt
 
+enumheaders = $(srcdir)/gexiv2/gexiv2-metadata.h \
+	$(srcdir)/gexiv2/gexiv2-log.h
+
+gexiv2-enums.cpp: $(enumheaders) Makefile
+	$(AM_V_GEN)$(GLIB_MKENUMS) \
+		--identifier-prefix GEXIV2 \
+		--symbol-prefix gexiv2 \
+		--template $(srcdir)/gexiv2/gexiv2-enums.cpp.template \
+		$(enumheaders) > $@
+
+gexiv2-enums.h: $(enumheaders) Makefile
+	$(AM_V_GEN)$(GLIB_MKENUMS) \
+		--identifier-prefix GEXIV2 \
+		--symbol-prefix gexiv2 \
+		--template $(srcdir)/gexiv2/gexiv2-enums.h.template \
+		$(enumheaders) > $@
 
 # Installed Files #
 pkgconfig_DATA  = @PACKAGE_NAME@.pc
@@ -42,11 +84,8 @@ py3gi_DATA      = GExiv2.py
 endif
 endif
 
-vapi: gexiv2.vapi
-
 if ENABLE_VAPIGEN
-gexiv2.vapi: gexiv2_vapi.stamp
-	@true
+vapi: gexiv2.vapi
 
 gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2-0.10.metadata $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	rm -f $(@F)
@@ -55,9 +94,13 @@ gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2
 			      $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	echo timestmap > $(@F)
 
+gexiv2.vapi: gexiv2_vapi.stamp
+	@true
+
+CLEANFILES += gexiv2.vapi gexiv2_vapi.stamp
+
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
-DISTCLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
 endif
 
 GEXIV2_GIRHEADERS = \
@@ -67,7 +110,8 @@ GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2-preview-image.h \
 	$(srcdir)/gexiv2/gexiv2-log.h \
 	$(srcdir)/gexiv2/gexiv2-startup.h \
-	gexiv2/gexiv2-version.h
+	gexiv2/gexiv2-version.h \
+	gexiv2-enums.h
 
 GEXIV2_public_HEADERS = \
 	$(srcdir)/gexiv2/gexiv2-managed-stream.h \
@@ -89,7 +133,8 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-metadata-private.h \
 	gexiv2/gexiv2-stream-io.h \
 	gexiv2/gexiv2-preview-properties-private.h \
-	gexiv2/gexiv2-preview-image-private.h
+	gexiv2/gexiv2-preview-image-private.h \
+	gexiv2-enums.cpp
 
 # compilation setup. #
 
@@ -97,18 +142,7 @@ if PLATFORM_WIN32
 no_undefined = -no-undefined
 endif
 
-# REQUIRED_CFLAGS absolutely get appended to CFLAGS, whatever the
-# the value of CFLAGS in the environment.
-REQUIRED_CXXFLAGS=
-
-# Because -fPIC can interfere with compilation on 32-bit platforms but
-# is absolutely necessary for AMD64, we check what the target machine's
-# word size is, and set our required flags based upon that.
-if WORD_64
-REQUIRED_CXXFLAGS += -fPIC -DPIC
-endif
-
-AM_CXXFLAGS = $(REQUIRED_CXXFLAGS) -I$(top_builddir)/gexiv2 $(WARN_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_builddir)/gexiv2 $(WARN_CXXFLAGS)
 
 $(GEXIV2_sources): gexiv2/gexiv2-version.h
 
@@ -119,8 +153,15 @@ lib@PACKAGE_NAME@_la_SOURCES  = $(GEXIV2_sources) $(GEXIV2_public_HEADERS)
 lib@PACKAGE_NAME@_la_LIBADD   = $(EXIV2_LIBS) $(GLIB_LIBS)
 lib@PACKAGE_NAME@_la_CPPFLAGS = $(EXIV2_CFLAGS) $(GLIB_CFLAGS)
 
+if PLATFORM_DARWIN
+VERSION_SCRIPT_LDFLAGS=
+else
+VERSION_SCRIPT_LDFLAGS="-Wl,--version-script=$(srcdir)/gexiv2/gexiv2.map"
+endif
+
 lib@PACKAGE_NAME@_la_LDFLAGS  = \
 	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO) \
+	$(VERSION_SCRIPT_LDFLAGS) \
 	$(WARN_LDFLAGS)
 
 clean-local:
@@ -130,22 +171,9 @@ clean-local:
 	rm -rf test/python/gi test/python/__pycache__
 
 # Tests and utilities #
+#
 
-if ENABLE_TESTS
-
-tests: test/gexiv2-dump test/python2 test/python3
-
-test/gexiv2-dump: test/gexiv2-dump.vala
-	valac -g --enable-checking --vapidir=. --pkg gexiv2 $< -o $@
-
-test/python/gi/overrides/GExiv2.py:
-	[ -d $(dir $@) ] || mkdir -p $(dir $@)
-	ln -sf ../../../../GExiv2.py $@
-
-test/python%: $(TYPELIB_FILES) test/python/gi/overrides/GExiv2.py
-	LD_LIBRARY_PATH=.libs GI_TYPELIB_PATH=. PYTHONPATH=test/python python$* -m unittest gexiv2
-
-endif
+include check.am
 
 # Optional Introspection #
 
@@ -156,6 +184,7 @@ INTROSPECTION_SCANNER_ARGS = \
 			     --symbol-prefix=@PACKAGE_NAME@		\
 			     --add-include-path=$(BUILD_DIR) \
 			     --pkg-export=gexiv2 \
+			     --c-include=gexiv2/gexiv2.h \
 			     $(WARN_SCANNERFLAGS)
 INTROSPECTION_COMPILER_ARGS = --includedir=$(BUILD_DIR)
 
@@ -168,5 +197,5 @@ GExiv2_@GIR_VERSION_U@_gir_NAMESPACE = GExiv2
 GExiv2_@GIR_VERSION_U@_gir_VERSION = $(GIR_VERSION)
 INTROSPECTION_GIRS += GExiv2-$(GIR_VERSION).gir
 
-CLEANFILES = $(gir_DATA) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 endif

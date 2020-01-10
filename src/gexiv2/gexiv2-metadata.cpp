@@ -19,9 +19,11 @@
 #include "gexiv2-log.h"
 #include "gexiv2-log-private.h"
 #include <string>
+#include <cmath>
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <exiv2/image.hpp>
+#include <exiv2/xmpsidecar.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
@@ -30,6 +32,10 @@
 
 
 G_BEGIN_DECLS
+
+#define GEXIV2_METADATA_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataPrivate))
+
 G_DEFINE_TYPE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
 
 static void gexiv2_metadata_finalize (GObject *object);
@@ -307,6 +313,18 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Imag
     return TRUE;
 }
 
+gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path, GError **error) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+
+    try {
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, path), error);
+    } catch (Exiv2::Error &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+
+    return FALSE;
+}
+
 gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     
@@ -395,26 +413,31 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         // Because some camera set a wrong standard exif orientation tag,
         // We need to check makernote tags first!
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs7D.Rotation")) {
-            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation")) {
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation");
+            switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
-                
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                case 72:
+                    return GEXIV2_ORIENTATION_UNSPECIFIED;
                 default:
-                    g_assert_not_reached();
+                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
             }
         }
-        
+
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs5D.Rotation")) {
-            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation")) {
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation");
+            switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
                 
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                case 72:
+                    return GEXIV2_ORIENTATION_UNSPECIFIED;
                 default:
-                    g_assert_not_reached();
+                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
             }
         }
         
@@ -607,12 +630,13 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
 void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != NULL);
+    g_return_if_fail(comment != NULL);
     
     Exiv2::ExifData& exif_data = self->priv->image->exifData();
     Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
-    gexiv2_metadata_set_comment_internal (self, (comment != NULL) ? comment : "");
+    gexiv2_metadata_set_comment_internal (self, comment);
     exif_data ["Exif.Image.ImageDescription"] = comment;
     exif_data ["Exif.Photo.UserComment"] = comment;
     exif_data ["Exif.Image.XPComment"] = comment;
@@ -761,7 +785,18 @@ gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gin
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
+    gdouble fnumber = gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
+    if (fnumber == -1.0) {
+        gdouble aperture_value = gexiv2_metadata_get_exif_tag_rational_as_double(self,
+                                                                                 "Exif.Photo.ApertureValue",
+                                                                                 -1.0);
+        if (aperture_value == -1.0)
+          return fnumber;
+
+        fnumber = pow (2.0, aperture_value / 2.0);
+    }
+
+    return fnumber;
 }
 
 gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {

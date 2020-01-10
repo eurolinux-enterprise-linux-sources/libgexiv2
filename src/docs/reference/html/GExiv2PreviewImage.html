@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GExiv2PreviewImage: gexiv2 Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<link rel="home" href="index.html" title="gexiv2 Reference Manual">
+<link rel="up" href="ch01.html" title="GExiv2">
+<link rel="prev" href="GExiv2Metadata.html" title="GExiv2Metadata">
+<link rel="next" href="GExiv2PreviewProperties.html" title="GExiv2PreviewProperties">
+<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GExiv2PreviewImage.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GExiv2PreviewImage.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="GExiv2Metadata.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GExiv2PreviewProperties.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GExiv2PreviewImage"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GExiv2PreviewImage.top_of_page"></a>GExiv2PreviewImage</span></h2>
+<p>GExiv2PreviewImage — Class describing preview images (or thumbnails) that
+are part of the metadata.</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-free" title="gexiv2_preview_image_free ()">gexiv2_preview_image_free</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint8"><span class="returnvalue">guint8</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-get-data" title="gexiv2_preview_image_get_data ()">gexiv2_preview_image_get_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-get-mime-type" title="gexiv2_preview_image_get_mime_type ()">gexiv2_preview_image_get_mime_type</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-get-extension" title="gexiv2_preview_image_get_extension ()">gexiv2_preview_image_get_extension</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-get-width" title="gexiv2_preview_image_get_width ()">gexiv2_preview_image_get_width</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-get-height" title="gexiv2_preview_image_get_height ()">gexiv2_preview_image_get_height</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#glong"><span class="returnvalue">glong</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GExiv2PreviewImage.html#gexiv2-preview-image-write-file" title="gexiv2_preview_image_write_file ()">gexiv2_preview_image_write_file</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#GObject-struct">GObject</a>
+    <span class="lineart">╰──</span> GExiv2PreviewImage
+</pre>
+</div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.description"></a><h2>Description</h2>
+<p><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> is an accessor to the preview images contained in
+the image's metadata. This could be anything from a thumbnail to a
+full-sized camera development of a RAW image.</p>
+<p>The <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> is obtained by calling <a class="link" href="GExiv2Metadata.html#gexiv2-metadata-get-preview-image" title="gexiv2_metadata_get_preview_image ()"><code class="function">gexiv2_metadata_get_preview_image()</code></a>
+with an instance of <a class="link" href="GExiv2PreviewProperties.html" title="GExiv2PreviewProperties"><span class="type">GExiv2PreviewProperties</span></a> that are describing the image
+to be fetched.</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7</pre></td>
+        <td class="listing_code"><pre class="programlisting">GExiv2PreviewProperties <span class="gtkdoc opt">**</span>properties<span class="gtkdoc opt">, **</span>it<span class="gtkdoc opt">;</span>
+properties <span class="gtkdoc opt">=</span> it <span class="gtkdoc opt">=</span> <span class="function"><a href="GExiv2Metadata.html#gexiv2-metadata-get-preview-properties">gexiv2_metadata_get_preview_properties</a></span><span class="gtkdoc opt">(</span>metadata<span class="gtkdoc opt">);</span>
+
+<span class="keyword">while</span> <span class="gtkdoc opt">(*</span>it<span class="gtkdoc opt">) {</span>
+  preview_image <span class="gtkdoc opt">=</span> <span class="function"><a href="GExiv2Metadata.html#gexiv2-metadata-get-preview-image">gexiv2_metadata_get_preview_image</a></span><span class="gtkdoc opt">(</span>metadata<span class="gtkdoc opt">, *</span>it<span class="gtkdoc opt">);</span>
+  it<span class="gtkdoc opt">++;</span>
+<span class="gtkdoc opt">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gexiv2-preview-image-free"></a><h3>gexiv2_preview_image_free ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gexiv2_preview_image_free (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>);</pre>
+<div class="warning">
+<p><code class="literal">gexiv2_preview_image_free</code> has been deprecated since version 0.10.3 and should not be used in newly-written code.</p>
+<p>Use <a href="/usr/share/gtk-doc/html/gobjectgobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> instead.</p>
+</div>
+<p>Releases the preview image and all associated memory.</p>
+<div class="refsect3">
+<a name="gexiv2-preview-image-free.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-get-data"></a><h3>gexiv2_preview_image_get_data ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint8"><span class="returnvalue">guint8</span></a> *
+gexiv2_preview_image_get_data (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>,
+                               <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *size</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-data.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p> The size of the buffer holding the data. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Exposed in C code, not necessarily available in other languages."><span class="acronym">skip</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-data.returns"></a><h4>Returns</h4>
+<p> The raw image data. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-get-mime-type"></a><h3>gexiv2_preview_image_get_mime_type ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gexiv2_preview_image_get_mime_type (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-mime-type.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-mime-type.returns"></a><h4>Returns</h4>
+<p> The preview image's MIME type. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-get-extension"></a><h3>gexiv2_preview_image_get_extension ()</h3>
+<pre class="programlisting">const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gexiv2_preview_image_get_extension (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-extension.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-extension.returns"></a><h4>Returns</h4>
+<p> The preview image's recommended file extension. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-get-width"></a><h3>gexiv2_preview_image_get_width ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>
+gexiv2_preview_image_get_width (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-width.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-width.returns"></a><h4>Returns</h4>
+<p> The preview image's display width in pixels.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-get-height"></a><h3>gexiv2_preview_image_get_height ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="returnvalue">guint32</span></a>
+gexiv2_preview_image_get_height (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-height.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-get-height.returns"></a><h4>Returns</h4>
+<p> The preview image's display height in pixels.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gexiv2-preview-image-write-file"></a><h3>gexiv2_preview_image_write_file ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#glong"><span class="returnvalue">glong</span></a>
+gexiv2_preview_image_write_file (<em class="parameter"><code><a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a> *self</code></em>,
+                                 <em class="parameter"><code>const <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
+<div class="refsect3">
+<a name="gexiv2-preview-image-write-file.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>An instance of <a class="link" href="GExiv2PreviewImage.html" title="GExiv2PreviewImage"><span class="type">GExiv2PreviewImage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>path</p></td>
+<td class="parameter_description"><p> The file path to write the preview image to. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="gexiv2-preview-image-write-file.returns"></a><h4>Returns</h4>
+<p> The number of bytes written to the file.</p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.other_details"></a><h2>Types and Values</h2>
+</div>
+<div class="refsect1">
+<a name="GExiv2PreviewImage.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="GExiv2Metadata.html" title="GExiv2Metadata"><span class="type">GExiv2Metadata</span></a> <a class="link" href="GExiv2PreviewProperties.html" title="GExiv2PreviewProperties"><span class="type">GExiv2PreviewProperties</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>Generated by GTK-Doc V1.25</div>
+</body>
+</html>

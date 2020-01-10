@@ -1,3 +1,80 @@
+gexiv2 0.10.8 - 5 Feb 2018
+
+  * Do not use linker scripts on Drawin/OS X
+  * Fallback to AperturValue if FNumber is absent
+  * Fix GIR header and vapi when using meson
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=791941
+ - https://bugzilla.gnome.org/show_bug.cgi?id=792239
+ - https://bugzilla.gnome.org/show_bug.cgi?id=792431
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Debarshi Ray <debarshir@gnome.org>
+ - Corentin Noël <corentin@elementary.io>
+
+gexiv2 0.10.7 - 24 Dec 2017
+
+  * Add meson build support
+  * Use glib-mkenums for enum types
+  * Update debian
+  * Fix make check when running out of tree
+  * Use version script to clean up exported functions
+  * Fix --disable-vala
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=784045
+ - https://bugzilla.gnome.org/show_bug.cgi?id=787455
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Debarshi Ray <debarshir@gnome.org>
+ - Jason Crain <jason@inspiresomeone.us>
+
+gexiv2 0.10.6 - 21 May 2017
+
+  * Fix missing include file
+  * Add a function to save meta-data in XMP sidecar file
+  * Add a more complete Python test-suite
+  * Fix a potential NULL dereference in _get_comment()
+  * Fix compatibility with Exiv2 0.26
+
+Bugs fixed in this release:
+ - Coverity issue CID 167853
+ - https://bugs.gentoo.org/show_bug.cgi?id=613778
+ - https://bugzilla.gnome.org/show_bug.cgi?id=712455
+ - https://bugzilla.gnome.org/show_bug.cgi?id=780709
+ - https://bugzilla.gnome.org/show_bug.cgi?id=782449
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Robert Bruce Park <r@robru.ca>
+
+gexiv2 0.10.5 - 20 March 2017
+
+  * Fix autogen.sh to also run configure
+  * Generate gtk-doc and various documentation updates
+  * Fix an abort on unhandled Minolta meta-data
+  * Fix compilation issues with shadowing variables in StreamIO
+  * Fix GPS rational calculations if fraction has 0 numerator and denominator
+  * Several build cleanups
+  * Add make check to build and run the python tests
+  * Add C tests
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=723790
+ - https://bugzilla.gnome.org/show_bug.cgi?id=774105
+ - https://bugzilla.gnome.org/show_bug.cgi?id=775249
+ - https://bugzilla.gnome.org/show_bug.cgi?id=776233
+ - https://bugzilla.gnome.org/show_bug.cgi?id=779089
+ - https://bugzilla.gnome.org/show_bug.cgi?id=779551
+ - https://bugzilla.redhat.com/show_bug.cgi?id=1401706
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Pablo Castellano <pablo@anche.no>
+
 gexiv2 0.10.4 - 15 August 2016
 ------------------------------
 
