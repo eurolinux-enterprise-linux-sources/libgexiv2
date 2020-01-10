@@ -1,14 +1,18 @@
 Name:           libgexiv2
 Version:        0.10.4
-Release:        2%{?dist}
+Release:        4%{?dist}
 Summary:        Gexiv2 is a GObject-based wrapper around the Exiv2 library
 
 License:        GPLv2+
 URL:            http://trac.yorba.org/wiki/gexiv2 
 Source0:        https://download.gnome.org/sources/gexiv2/0.10/gexiv2-%{version}.tar.xz
+
 Patch0:         %{name}-pkgconf.patch
 
-BuildRequires:  exiv2-devel
+# https://bugzilla.redhat.com/show_bug.cgi?id=1486570
+Patch1:         %{name}-Adapt-to-Exiv2-BasicIo-API-change.patch
+
+BuildRequires:  exiv2-devel >= 0.26
 BuildRequires:  gobject-introspection-devel
 BuildRequires:  libtool
 BuildRequires:  python2-devel
@@ -62,6 +66,7 @@ This package contains the python3 bindings for %{name}
 %prep
 %setup -q -n gexiv2-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %configure --enable-tests --enable-introspection --enable-static=no --enable-shared=yes
@@ -112,6 +117,15 @@ mv $RPM_BUILD_ROOT%{_datadir}/gir-1.0/GExiv2-0.10.typelib \
 %endif
 
 %changelog
+* Wed Oct 11 2017 Debarshi Ray <rishi@fedoraproject.org> - 0.10.4-4
+- Ensure that the new exiv2 soname is used during the build
+- Adapt to Exiv2::BasicIo API change
+  Resolves: rhbz#1486570
+
+* Tue Sep 19 2017 Richard Hughes <rhughes@redhat.com> - 0.10.4-3
+- Rebuild against the rebased exiv2
+- Resolves: rhbz#1486570
+
 * Fri May 19 2017 Debarshi Ray <rishi@fedoraproject.org> - 0.10.4-2
 - Add Provides to retain compatibility
   Resolves: rhbz#1387004
